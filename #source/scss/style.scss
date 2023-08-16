@@ -1,0 +1,79 @@
+// Файл обнуляющих стилей
+@import "_nullstyle";
+
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap");
+
+.container {
+  width: 100%;
+  font-family: "Lato", sans-serif;
+}
+
+.header {
+  &__content {
+    display: flex;
+    text-align: center;
+  }
+
+  &__enter {
+    padding: 15px;
+    flex-grow: 1;
+    background-color: #d2d9d8;
+    color: rgb(0, 0, 0);
+    border-radius: 5px;
+  }
+
+  &__registration {
+    border-radius: 5px;
+    background-color: #d2d9d8;
+    padding: 15px;
+    flex-grow: 1;
+    color: rgb(0, 0, 0);
+  }
+}
+
+.main {
+  // &__content {
+  // }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__email {
+    width: 250px;
+    margin: 50px 0 25px 0;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid gray;
+  }
+
+  &__password {
+    border: 1px solid gray;
+    width: 250px;
+    padding: 10px;
+    margin-bottom: 50px;
+    border-radius: 10px;
+  }
+
+  &__password:focus,
+  &__email:focus {
+    border: 2px solid #278b98;
+  }
+
+  &__submit {
+    // letter-spacing: 1px;
+    width: 250px;
+    padding: 10px;
+    background-color: #278b98;
+    color: white;
+    font-weight: 700;
+    border-radius: 10px;
+  }
+
+  &__submit:hover {
+    cursor: pointer;
+  }
+}
