@@ -10,6 +10,31 @@
   </head>
   <body>
     <?php 
+
+    class User{
+      public $login, $password, $first_name, $last_name, $patronymic, $date;
+      public function __construct($login, $password, $first_name, $last_name, $patronymic, $date)
+      {
+          $this->login = $login;
+          $this->password = $password;
+          $this->first_name = $first_name;
+          $this->last_name = $last_name;
+          $this->patronymic = $patronymic;
+          $this->date = $date;
+      }
+
+      public function makeQueryToInsert()
+      {
+        return "INSERT INTO users SET login='$this->login', password = '$this->password',
+        date='$this->date', first_name='$this->first_name', 
+        last_name='$this->last_name', mid_name = '$this->patronymic', status_id = '1', banned = '0'";
+      }
+
+      public function makeQueryToInsertImage($image = 'no.png')
+      {
+        return "INSERT INTO images SET login='$this->login' , image=$image ";
+      }
+    }
     session_start();
     error_reporting(0); 
 
@@ -23,31 +48,16 @@
 
 
     if ($_POST['password'] == $_POST['confirm']) { // Совпадают ли пароли
-      $login=$_POST['login'];
-      $password=password_hash($_POST['password'], PASSWORD_DEFAULT);
-      $first_name = $_POST['first_name'];
-      $last_name = $_POST['last_name'];
-      $patronymic = $_POST['mid_name'];
-      
-      $date = $_POST['date'];
-      // $date = preg_replace('/[^0-9\.]/u', '', trim($date));
-      // $date_arr = explode('.',$date);
+      $user = new User($_POST['login'], password_hash($_POST['password'], PASSWORD_DEFAULT), $_POST['first_name'],
+      $_POST['last_name'], $_POST['mid_name'], $_POST['date']);
 
-      $query = "SELECT * FROM users WHERE login='$login'";
-      $user = mysqli_fetch_assoc(mysqli_query($link,$query));
       if( ($_POST['kapcha'] == $_SESSION['rand_code'])){
         if(preg_match('/^[a-zA-Z0-9]+$/',$login) && isset($_POST['login'])){ // Проверяем логин на латинские буквы и цифры
-          if (empty($user)){ // Проверяем есть ли такой логин
             if (strlen($login) > 3 and strlen($login) < 11){ // Проверяем Логин на кол-во символов
                 if (strlen($_POST['password']) > 5 and strlen($_POST['password']) < 13){ // Проверяем Пароль на кол-во символов
              
-      $query = "INSERT INTO users SET login='$login', password = '$password',
-      date='$date', first_name='$first_name', 
-      last_name='$last_name', mid_name = '$patronymic', status_id = '1', banned = '0'";
-      mysqli_query($link,$query);
-
-      $query = "INSERT INTO images SET login='$login' , image='no.png' ";
-      mysqli_query($link,$query);
+      mysqli_query($link,$user->makeQueryToInsert());
+      mysqli_query($link,$user->makeQueryToInsertImage());
 
       $_SESSION['login'] = $_POST['login'];
       $_SESSION['auth'] = true;
@@ -60,7 +70,6 @@
       
                 } else { $above_pass = "Пароль должен быть от  6 до 12 символов !";}
               } else { $above_log = "Логин должен быть от 4 до 10 символов !";  }
-            } else { $above_log = "Такой логин уже занят, введите другой"; }
         }  else {  $above_log = "Логин дожен содержать только латинские буквы и цифры !"; }
       } else {$above_kap = "Капча введена неверно  !";}
     } else { $above_pass = "Пароли не совпали, попробуйте ещё раз";  }
